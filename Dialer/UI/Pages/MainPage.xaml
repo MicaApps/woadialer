@@ -16,12 +16,31 @@
     </UserControl.Resources>
 
     <Grid>
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <!--VisualState to be triggered when window width is >=720 effective pixels.-->
+                        <AdaptiveTrigger MinWindowWidth="680"/>
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="nv_PagePresenter.PaneDisplayMode" Value="Left"/>
+                        <Setter Target="nv_PagePresenter.IsPaneOpen" Value="False"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <controls:TitlebarControl x:Name="Titlebar"
                                   HorizontalAlignment="Stretch"/>
+
+        
 
         <muxc:NavigationView x:Name="nv_PagePresenter"
                              Grid.Row="1"
