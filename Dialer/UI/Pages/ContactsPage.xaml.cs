@@ -1,7 +1,10 @@
 using Dialer.Systems;
 using Dialer.UI.Controls;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
@@ -10,6 +13,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Contacts;
+using Microsoft.International.Converters.PinYinConverter;
 
 namespace Dialer.UI.Pages
 {
@@ -58,6 +63,13 @@ namespace Dialer.UI.Pages
                 _contactControls = ContactSystem.ContactControls;
                 ContactsItemsControl.ItemsSource = _contactControls;
                 LoadingGrid.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+
+                var collectionViewSource = grid.Resources["CollectionViewSource"] as CollectionViewSource;
+                collectionViewSource.Source = from item in ContactSystem.Contacts
+                                              group item by GetCharSpellCode(item.DisplayName.FirstOrDefault('#').ToString()) into g
+                                              orderby g.Key
+                                              select new GroupInfoList(g) { Key = g.Key }; 
+
             });
         }
 
@@ -119,5 +131,37 @@ namespace Dialer.UI.Pages
         {
             _ = _contactControls.Remove(cc);
         }
+
+        private static string GetCharSpellCode(string _char)
+        {
+            byte[] array = new byte[2];
+            array = System.Text.Encoding.Default.GetBytes(_char.Trim());
+
+            if (array.Length == 1)
+                return _char.ToUpper();
+
+            if (array.Length > 1)
+            {
+                ChineseChar chineseChar = new ChineseChar(_char[0]);
+                return chineseChar.Pinyins.First().First().ToString();
+            }
+
+            return "#";
+
+        }
+    }
+}
+
+internal class GroupInfoList : List<Contact>
+{
+    public GroupInfoList(IEnumerable<Contact> items) : base(items)
+    {
+    }
+
+    public object Key { get; set; }
+
+    public override string ToString()
+    {
+        return "Group " + Key.ToString();
     }
 }

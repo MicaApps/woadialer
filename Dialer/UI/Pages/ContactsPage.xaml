@@ -6,40 +6,220 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:controls="using:Dialer.UI.Controls"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:Windows10FallCreatorsUpdate="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 5)"
     mc:Ignorable="d"
     NavigationCacheMode="Required">
 
-    <Grid>
-        <controls:VerticalIndexScrollbar x:Name="viScrollbar" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0, 20, 15, 10"></controls:VerticalIndexScrollbar>
-        <ScrollViewer x:Name="ContactsScrollViewer" Padding="10" Margin="0, 0, 40, 0">
-            <ItemsControl x:Name="ContactsItemsControl" ItemsSource="{x:Bind _contactControls}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Windows10FallCreatorsUpdate:Spacing="3">
+    <Grid x:Name="grid">
+        <Grid.Resources>
+            <ResourceDictionary>
+                <CollectionViewSource x:Key="CollectionViewSource" IsSourceGrouped="True" />
+            </ResourceDictionary>
+        </Grid.Resources>
+        
+        <Grid Visibility="Collapsed">
+            <controls:VerticalIndexScrollbar x:Name="viScrollbar" HorizontalAlignment="Right" VerticalAlignment="Stretch" Margin="0, 20, 15, 10"></controls:VerticalIndexScrollbar>
+            <ScrollViewer x:Name="ContactsScrollViewer" Padding="10" Margin="0, 0, 40, 0">
+                <ItemsControl x:Name="ContactsItemsControl" ItemsSource="{x:Bind _contactControls}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Windows10FallCreatorsUpdate:Spacing="3">
+                            </StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+            <Grid x:Name="ScrollLetterGrid" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource SystemControlAcrylicElementBrush}" Margin="0, 0, 40, 0" Width="200" Height="200" Windows10FallCreatorsUpdate:CornerRadius="8">
+                <Grid.Resources>
+                    <Storyboard x:Name="ScrollLetterHintShow">
+                        <DoubleAnimation Storyboard.TargetName="ScrollLetterGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:0.1" From="0" To="1"></DoubleAnimation>
+                    </Storyboard>
+                    <Storyboard x:Name="ScrollLetterHintHide">
+                        <DoubleAnimation Storyboard.TargetName="ScrollLetterGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:0.1" From="1" To="0"></DoubleAnimation>
+                    </Storyboard>
+                </Grid.Resources>
+                <TextBlock x:Name="ScrollLetterHint" FontSize="80" VerticalAlignment="Center" HorizontalAlignment="Center">A</TextBlock>
+            </Grid>
+            <Grid x:Name="LoadingGrid" Visibility="Collapsed">
+                <Grid Background="{StaticResource SystemControlAcrylicElementBrush}"></Grid>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Windows10FallCreatorsUpdate:Spacing="10">
+                    <ProgressRing IsActive="True" HorizontalAlignment="Center"></ProgressRing>
+                    <TextBlock HorizontalAlignment="Center">Loading contact list...</TextBlock>
+                    <TextBlock x:Name="LoadingGridProgressCount" HorizontalAlignment="Center" Text=""></TextBlock>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <SplitView PaneBackground="Transparent" Background="Transparent" IsPaneOpen="True" OpenPaneLength="300" CompactPaneLength="48" DisplayMode="Inline">
+            <SplitView.Pane>
+                <Grid Padding="0,25">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Margin="25,0" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <AutoSuggestBox Grid.Column="0" PlaceholderText="Serach">
+                            <AutoSuggestBox.QueryIcon>
+                                <AnimatedIcon Width="14" Height="14">
+                                    <AnimatedIcon.Source>
+                                        <animatedvisuals:AnimatedFindVisualSource />
+                                    </AnimatedIcon.Source>
+                                    <AnimatedIcon.FallbackIconSource>
+                                        <SymbolIconSource Symbol="Find" />
+                                    </AnimatedIcon.FallbackIconSource>
+                                </AnimatedIcon>
+                            </AutoSuggestBox.QueryIcon>
+                        </AutoSuggestBox>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Spacing="5">
+                            <Button Width="32" Height="32" Padding="0" Style="{ThemeResource AlternateCloseButtonStyle}">
+                                <FontIcon FontSize="14" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Glyph="&#xE71C;" />
+                            </Button>
+                            <Button Width="32" Height="32" Padding="0" Style="{ThemeResource AlternateCloseButtonStyle}">
+                                <FontIcon FontSize="14" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Glyph="&#xE710;" />
+                            </Button>
                         </StackPanel>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </ScrollViewer>
-        <Grid x:Name="ScrollLetterGrid" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource SystemControlAcrylicElementBrush}" Margin="0, 0, 40, 0" Width="200" Height="200" Windows10FallCreatorsUpdate:CornerRadius="8">
-            <Grid.Resources>
-                <Storyboard x:Name="ScrollLetterHintShow">
-                    <DoubleAnimation Storyboard.TargetName="ScrollLetterGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:0.1" From="0" To="1"></DoubleAnimation>
-                </Storyboard>
-                <Storyboard x:Name="ScrollLetterHintHide">
-                    <DoubleAnimation Storyboard.TargetName="ScrollLetterGrid" Storyboard.TargetProperty="Opacity" Duration="0:0:0.1" From="1" To="0"></DoubleAnimation>
-                </Storyboard>
-            </Grid.Resources>
-            <TextBlock x:Name="ScrollLetterHint" FontSize="80" VerticalAlignment="Center" HorizontalAlignment="Center">A</TextBlock>
-        </Grid>
-        <Grid x:Name="LoadingGrid" Visibility="Collapsed">
-            <Grid Background="{StaticResource SystemControlAcrylicElementBrush}"></Grid>
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Windows10FallCreatorsUpdate:Spacing="10">
-                <ProgressRing IsActive="True" HorizontalAlignment="Center"></ProgressRing>
-                <TextBlock HorizontalAlignment="Center">Loading contact list...</TextBlock>
-                <TextBlock x:Name="LoadingGridProgressCount" HorizontalAlignment="Center" Text=""></TextBlock>
-            </StackPanel>
-        </Grid>
+                    </Grid>
+
+                    <ListView x:Name="ListView" Padding="25,0" Grid.Row="2" ItemsSource="{Binding Source={StaticResource CollectionViewSource}}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse x:Name="Ellipse" Width ="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="{ThemeResource SystemControlBackgroundBaseMediumBrush}"/>
+                                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="{Binding DisplayName}" Style="{ThemeResource BaseTextBlockStyle}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderContainerStyle>
+                                    <Style TargetType="ListViewHeaderItem">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListViewHeaderItem">
+                                                    <ContentPresenter
+                                                        x:Name="ContentPresenter"
+                                                        Background="Transparent"
+                                                        Margin="{TemplateBinding Padding}"
+                                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                        VerticalContentAlignment="Center"
+                                                        Content="{TemplateBinding Content}"
+                                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                        ContentTransitions="{TemplateBinding ContentTransitions}" />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.HeaderContainerStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Border AutomationProperties.AccessibilityView="Raw">
+                                            <TextBlock
+                                                FontWeight="Bold"
+                                                FontSize="18"
+                                                Style="{ThemeResource BaseTextBlockStyle}"
+                                                Text="{Binding Key}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListView.GroupStyle>
+                    </ListView>
+                </Grid>
+            </SplitView.Pane>
+            <Grid>
+                <StackPanel Margin="25" VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="2" Spacing="5">
+                    <Button Width="32" Height="32" Padding="0" Style="{ThemeResource AlternateCloseButtonStyle}">
+                        <FontIcon FontSize="14" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Glyph="&#xE710;" />
+                    </Button>
+                    <Button Width="32" Height="32" Padding="0" Style="{ThemeResource AlternateCloseButtonStyle}">
+                        <FontIcon FontSize="14" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Glyph="&#xE70F;" />
+                    </Button>
+                    <Button Width="32" Height="32" Padding="0" Style="{ThemeResource AlternateCloseButtonStyle}">
+                        <FontIcon FontSize="14" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Glyph="&#xe72d;" />
+                    </Button>
+                    <Button Width="32" Height="32" Padding="0" Style="{ThemeResource AlternateCloseButtonStyle}">
+                        <FontIcon FontSize="14" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Glyph="&#xE74d;" />
+                    </Button>
+                </StackPanel>
+
+                <ScrollViewer>
+                    <StackPanel MinWidth="300" HorizontalAlignment="Center" Spacing="25" DataContext="{Binding ElementName=ListView, Path=SelectedItem}" Margin="0,75,0,0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15">
+                            <Ellipse x:Name="Ellipse" Width ="81" Height="81" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="{ThemeResource SystemControlBackgroundBaseMediumBrush}"/>
+                            <TextBlock Text="{Binding DisplayName}" Grid.Column="2" VerticalAlignment="Center" FontWeight="Bold" FontSize="36" Style="{ThemeResource BaseTextBlockStyle}"/>
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel>
+                                <TextBlock Text="Emails" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                <ListView ItemsSource="{Binding Emails, Mode=OneWay}" SelectionMode="None">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Address}"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                            <Setter Property="Padding" Value="0"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                </ListView>
+                            </StackPanel>
+
+                            <Button Grid.Column="2" VerticalAlignment="Center" Width="32" Height="32" Padding="0" Style="{ThemeResource AlternateCloseButtonStyle}">
+                                <FontIcon FontSize="14" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Glyph="&#xe89c;" />
+                            </Button>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel>
+                                <TextBlock Text="Phones" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}"/>
+                                <ListView ItemsSource="{Binding Phones, Mode=OneWay}" SelectionMode="None">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Number}"/>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+                                            <Setter Property="Padding" Value="0"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                </ListView>
+                            </StackPanel>
+
+                            <Button Grid.Column="2" VerticalAlignment="Center" Width="32" Height="32" Padding="0" Style="{ThemeResource AlternateCloseButtonStyle}">
+                                <FontIcon FontSize="14" Foreground="{ThemeResource ApplicationSecondaryForegroundThemeBrush}" Glyph="&#xe7f2;" />
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </SplitView>
     </Grid>
 </Page>
